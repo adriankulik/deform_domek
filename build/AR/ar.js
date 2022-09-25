@@ -19,9 +19,6 @@ loader.load("./3D/untitled.glb", function (mesh2) {
   mesh_reticle = mesh2.scene;
 });
 
-const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.1);
-scene.add(light);
-
 async function activateXR() {
   // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
   const gameLoop_canvas = document.createElement("canvas");
@@ -32,7 +29,7 @@ async function activateXR() {
   const scene = new THREE.Scene();
 
   // Setting up a light source
-  const light = new THREE.AmbientLight(0xffffff, 2); // soft white light
+  const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.1);
   scene.add(light);
 
   // Set up the WebGLRenderer, which handles rendering to the session's base layer.
