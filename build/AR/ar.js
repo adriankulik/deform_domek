@@ -19,7 +19,7 @@ loader.load("./3D/untitled.glb", function (mesh2) {
   mesh_reticle = mesh2.scene;
 });
 
-const light = new THREE.AmbientLight(0x404040); // soft white light
+const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
 scene.add(light);
 
 async function activateXR() {
