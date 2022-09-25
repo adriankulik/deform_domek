@@ -33,7 +33,7 @@ loader.load("./3D/untitled.glb", function (logo_mesh) {
 });
 
 // light
-const light = new THREE.AmbientLight(0xffffff, 2); // soft white light
+const light = new THREE.AmbientLight(0xffffff, 10); // soft white light
 scene.add(light);
 
 // renderer
