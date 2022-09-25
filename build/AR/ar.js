@@ -29,7 +29,7 @@ async function activateXR() {
   const scene = new THREE.Scene();
 
   // Setting up a light source
-  const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.1);
+  const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
   scene.add(light);
 
   // Set up the WebGLRenderer, which handles rendering to the session's base layer.
