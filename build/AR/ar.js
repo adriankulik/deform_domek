@@ -10,25 +10,30 @@ let mesh_reticle = null;
 let clone = null; //declaring clone as null globally fixes the issue of animations not working in the game loop
 
 const loader = new THREE.GLTFLoader(); //using glb (gltf binary), since it has texture data hardcoded
-loader.load('./3D/untitled.glb', function(mesh) { //loading the same object twice, so we can aim the reticle looking like the final object
+loader.load("./3D/untitled.glb", function (mesh) {
+  //loading the same object twice, so we can aim the reticle looking like the final object
   mesh_object = mesh.scene; // the mesh can't have unassigned materials(in blender for example). It won't open correctly
 });
-loader.load('./3D/untitled.glb', function(mesh2) { //mesh_reticle is loaded separately, so the opacity can be set independent of the mesh_object
+loader.load("./3D/untitled.glb", function (mesh2) {
+  //mesh_reticle is loaded separately, so the opacity can be set independent of the mesh_object
   mesh_reticle = mesh2.scene;
 });
+
+const light = new THREE.AmbientLight(0x404040); // soft white light
+scene.add(light);
 
 async function activateXR() {
   // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
   const gameLoop_canvas = document.createElement("canvas");
   document.body.appendChild(gameLoop_canvas);
-  const gl = gameLoop_canvas.getContext("webgl", {xrCompatible: true});
+  const gl = gameLoop_canvas.getContext("webgl", { xrCompatible: true });
 
   // Create three.js scene
   const scene = new THREE.Scene();
 
   // Setting up a light source
-  const light = new THREE.AmbientLight( 0xffffff, 2 ); // soft white light
-  scene.add( light );
+  const light = new THREE.AmbientLight(0xffffff, 2); // soft white light
+  scene.add(light);
 
   // Set up the WebGLRenderer, which handles rendering to the session's base layer.
   const renderer = new THREE.WebGLRenderer({
@@ -36,7 +41,7 @@ async function activateXR() {
     preserveDrawingBuffer: false,
     antialias: true,
     canvas: gameLoop_canvas,
-    context: gl
+    context: gl,
   });
   renderer.autoClear = false;
 
@@ -55,56 +60,68 @@ async function activateXR() {
   const exitButton = document.createElement("button");
   _dom_overlay.appendChild(exitButton);
   exitButton.classList.toggle("domOverlay__exitButton");
-  exitButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none" opacity=".87"/><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"/></svg>';
-  exitButton.addEventListener('click', exitButtonClicked);
+  exitButton.innerHTML =
+    '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none" opacity=".87"/><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z"/></svg>';
+  exitButton.addEventListener("click", exitButtonClicked);
   // Adding an "place 3D model" button
   const addButton = document.createElement("button");
   _dom_overlay.appendChild(addButton);
   addButton.classList.toggle("domOverlay__addButton");
-  addButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="48px" viewBox="0 0 24 24" width="48px" fill="#FFFFFF"><g><rect fill="none" height="24" width="24"/></g><g><g><path d="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6V13z"/></g></g></svg>'
+  addButton.innerHTML =
+    '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="48px" viewBox="0 0 24 24" width="48px" fill="#FFFFFF"><g><rect fill="none" height="24" width="24"/></g><g><g><path d="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6V13z"/></g></g></svg>';
   // Adding a reset button
   const resetButton = document.createElement("div");
   resetButton.classList.toggle("domOverlay__resetButton");
-  resetButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>';
+  resetButton.innerHTML =
+    '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 0 24 24" width="48px" fill="#ffffff"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>';
   _dom_overlay.appendChild(resetButton);
-  resetButton.addEventListener('click', resetButtonClicked);
+  resetButton.addEventListener("click", resetButtonClicked);
   // Adding a "rotate" slider
   const rotateInput = document.createElement("div");
   rotateInput.classList.toggle("domOverlay__rotateInput");
-  rotateInput.innerHTML = '<div class="domOverlay__rotateInput__text"><div class="domOverlay__rotateInput__text__Rotation">Rotation:&nbsp;</div><div class="domOverlay__rotateInput__text__Value">0°</div></div>'
-  rotateInput.innerHTML += '<input type="range" min="0" max="360" value="0" class="domOverlay__rotateInput__slider"></input>';
+  rotateInput.innerHTML =
+    '<div class="domOverlay__rotateInput__text"><div class="domOverlay__rotateInput__text__Rotation">Rotation:&nbsp;</div><div class="domOverlay__rotateInput__text__Value">0°</div></div>';
+  rotateInput.innerHTML +=
+    '<input type="range" min="0" max="360" value="0" class="domOverlay__rotateInput__slider"></input>';
   _dom_overlay.appendChild(rotateInput);
-  degrees = document.getElementsByClassName("domOverlay__rotateInput__slider")[0];
+  degrees = document.getElementsByClassName(
+    "domOverlay__rotateInput__slider"
+  )[0];
   // Adding a div to store instructions
   const instructionDiv = document.createElement("div");
   _dom_overlay.appendChild(instructionDiv);
   instructionDiv.classList.toggle("domOverlay__instructionDiv");
-  instructionDiv.innerHTML = '<div class="domOverlay__instructionDiv__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></div><div class="domOverlay__instructionDiv__text">Move your phone to help us understand your surroundings</div>'
+  instructionDiv.innerHTML =
+    '<div class="domOverlay__instructionDiv__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></div><div class="domOverlay__instructionDiv__text">Move your phone to help us understand your surroundings</div>';
 
   // Function to handle slider output values
-  rotateInput.oninput = function() {
+  rotateInput.oninput = function () {
     degrees.value;
-    document.getElementsByClassName("domOverlay__rotateInput__text__Value")[0].innerText = degrees.value + "°";
-  }
+    document.getElementsByClassName(
+      "domOverlay__rotateInput__text__Value"
+    )[0].innerText = degrees.value + "°";
+  };
 
   // Initialize a WebXR session using "immersive-ar".
   const session = await navigator.xr.requestSession("immersive-ar", {
-    requiredFeatures: ['hit-test'], //learn more about ['depth', 'light-estimation'] in the future, once this API is out of beta https://storage.googleapis.com/chromium-webxr-test/r914571/proposals/index.html
-    optionalFeatures: ['dom-overlay'],
+    requiredFeatures: ["hit-test"], //learn more about ['depth', 'light-estimation'] in the future, once this API is out of beta https://storage.googleapis.com/chromium-webxr-test/r914571/proposals/index.html
+    optionalFeatures: ["dom-overlay"],
     domOverlay: { root: _dom_overlay },
   });
   session.updateRenderState({
-    baseLayer: new XRWebGLLayer(session, gl)
+    baseLayer: new XRWebGLLayer(session, gl),
   });
 
   // A 'local' reference space has a native origin that is located
   // near the viewer's position at the time the session was created.
-  const referenceSpace = await session.requestReferenceSpace('local');
+  const referenceSpace = await session.requestReferenceSpace("local");
 
   // Create another XRReferenceSpace that has the viewer as the origin.
-  const viewerSpace = await session.requestReferenceSpace('viewer');
+  const viewerSpace = await session.requestReferenceSpace("viewer");
   // Perform hit testing using the viewer as origin.
-  let hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
+  let hitTestSource = await session.requestHitTestSource({
+    space: viewerSpace,
+  });
 
   // Exit button functionality
   function exitButtonClicked() {
@@ -132,9 +149,9 @@ async function activateXR() {
   // Reset button functionality
   let models = [];
   function resetButtonClicked() {
-    rotateInput.style.setProperty('display', 'flex'); // After the reset button is clicked, we show the add and rotate inputs and hide the reset button, since it's not needed any more
-    addButton.style.setProperty('display', 'flex');
-    resetButton.style.setProperty('display', 'none');
+    rotateInput.style.setProperty("display", "flex"); // After the reset button is clicked, we show the add and rotate inputs and hide the reset button, since it's not needed any more
+    addButton.style.setProperty("display", "flex");
+    resetButton.style.setProperty("display", "none");
     for (let i = 0; i < models.length; i++) {
       scene.remove(models[i]); // we need to create a clean slate, a tabula rasa to say the least - for new models to be added. We delete every mesh that's present in our array, that's why we need to use a loop
     }
@@ -142,10 +159,11 @@ async function activateXR() {
   }
 
   // Reticle helps the user with placing the 3D object in the scene
-  for (let i = 0; i < mesh_reticle.children.length; i++) { // the mesh can have a lot of children elements, so we need to iterate over them
+  for (let i = 0; i < mesh_reticle.children.length; i++) {
+    // the mesh can have a lot of children elements, so we need to iterate over them
     mesh_reticle.children[i].material.transparent = true;
     mesh_reticle.children[i].material.opacity = 0.5;
-  };
+  }
   let reticle = mesh_reticle;
   reticle.visible = false;
   scene.add(reticle);
@@ -160,27 +178,30 @@ async function activateXR() {
         clone.position.copy(reticle.position);
         scene.add(clone);
         models.push(clone);
-        if (models.length > MAX_MODELS_COUNT) { // Reducing max amount of models for sustainable performance
+        if (models.length > MAX_MODELS_COUNT) {
+          // Reducing max amount of models for sustainable performance
           let oldClone = models[0];
           scene.remove(oldClone);
           models.shift(); // Deleting the oldest model first
         }
-        resetButton.style.setProperty('display', 'flex'); // After the model is added, we make the necessary UI changes - hidind the rotate slider and add button once again
-        addButton.style.setProperty('display', 'none');
-        rotateInput.style.setProperty('display', 'none');
-      }   
+        resetButton.style.setProperty("display", "flex"); // After the model is added, we make the necessary UI changes - hidind the rotate slider and add button once again
+        addButton.style.setProperty("display", "none");
+        rotateInput.style.setProperty("display", "none");
+      }
     }
     reticle.visible = false;
   });
 
   // Create a render loop that allows us to draw on the AR view.
   const onXRFrame = (time, frame) => {
-
     // Queue up the next draw request.
     session.requestAnimationFrame(onXRFrame);
 
     // Bind the graphics framebuffer to the baseLayer's framebuffer
-    gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer)
+    gl.bindFramebuffer(
+      gl.FRAMEBUFFER,
+      session.renderState.baseLayer.framebuffer
+    );
 
     // Retrieve the pose of the device.
     // XRFrame.getViewerPose can return null while the session attempts to establish tracking.
@@ -190,18 +211,18 @@ async function activateXR() {
       const view = pose.views[0];
 
       const viewport = session.renderState.baseLayer.getViewport(view);
-      renderer.setSize(viewport.width, viewport.height)
+      renderer.setSize(viewport.width, viewport.height);
 
       // When the pose of the device is retrieved, we can stop displaying the instruction div
       instructionDiv.style.opacity = "0%";
 
       // Use the view's transform matrix and projection matrix to configure the THREE.camera.
-      camera.matrix.fromArray(view.transform.matrix)
+      camera.matrix.fromArray(view.transform.matrix);
       camera.projectionMatrix.fromArray(view.projectionMatrix);
       camera.updateMatrixWorld(true);
 
       // Rotation value is being checked on every frame
-      animated_rotation = degrees.value * (Math.PI/180); // Since three.js accepts only radians, we need to convert the value from degrees to rad
+      animated_rotation = degrees.value * (Math.PI / 180); // Since three.js accepts only radians, we need to convert the value from degrees to rad
 
       const hitTestResults = frame.getHitTestResults(hitTestSource);
       if (hitTestResults.length > 0 && reticle !== null) {
@@ -212,7 +233,11 @@ async function activateXR() {
           reticle.visible = true;
           reticle.rotation.y = animated_rotation; // Applying rotation to the reticle. The same rotation will be applied to the models[i] in the next "if" statement
         }
-        reticle.position.set(hitPose.transform.position.x, hitPose.transform.position.y, hitPose.transform.position.z);
+        reticle.position.set(
+          hitPose.transform.position.x,
+          hitPose.transform.position.y,
+          hitPose.transform.position.z
+        );
         reticle.updateMatrixWorld(true);
       }
 
@@ -228,7 +253,6 @@ async function activateXR() {
       // Render the scene with THREE.WebGLRenderer.
       renderer.render(scene, camera);
     }
-
-  }
+  };
   session.requestAnimationFrame(onXRFrame);
 }
