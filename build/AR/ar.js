@@ -7,7 +7,7 @@ WebXR is licensed under the W3C license. Further reading: https://www.w3.org/Con
 
 let mesh_object = null;
 let mesh_reticle = null;
-let clone = null; //declaring clone as null globally fixes the issue of animations not working in the game loop
+let clone = null; //declaring clone as null globally fixes the issue of animations not working in the game   loop
 
 const loader = new THREE.GLTFLoader(); //using glb (gltf binary), since it has texture data hardcoded
 loader.load("./3D/untitled.glb", function (mesh) {
