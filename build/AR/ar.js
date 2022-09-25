@@ -19,7 +19,7 @@ loader.load("./3D/untitled.glb", function (mesh2) {
   mesh_reticle = mesh2.scene;
 });
 
-const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
+const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.1);
 scene.add(light);
 
 async function activateXR() {
